@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.common.models import BaseModel
+from apps.user.choices import UserStatus
 
 
 class UserManager(AbstractUserManager):
@@ -34,6 +35,9 @@ class UserManager(AbstractUserManager):
 class User(AbstractUser, BaseModel):
     username = None
     email = models.EmailField(_("email address"), unique=True)
+    status = models.CharField(
+        max_length=9, choices=UserStatus.choices, verbose_name=_("User status"), default=UserStatus.BASIC
+    )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []  # type: ignore
 
@@ -47,3 +51,17 @@ class User(AbstractUser, BaseModel):
 
     def __str__(self):
         return self.email
+
+
+class Profile(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    full_name = models.CharField(max_length=128, verbose_name=_("Full name"))
+    avatar = models.ImageField(verbose_name=_("Avatar"), upload_to="profile/pictures", null=True, blank=True)
+    birth_date = models.DateField(verbose_name=_("Birth date"), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Profile")
+        verbose_name_plural = _("Profile")
+
+    def __str__(self):
+        return self.full_name
