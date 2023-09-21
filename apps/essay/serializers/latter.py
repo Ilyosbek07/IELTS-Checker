@@ -103,3 +103,5 @@ class FeedbackSerializer(serializers.ModelSerializer):
             'grammar',
             'report',
         )
+class Serializer(serializers.ModelSerializer):
+    pass
