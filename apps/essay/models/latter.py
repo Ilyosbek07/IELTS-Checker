@@ -91,6 +91,8 @@ class Grammar(BaseModel):
 
 
 class GrammarAnswer(BaseModel):
+    class NotesChoice(models.TextChoices):
+        pass
     grammar = models.ForeignKey(Grammar, on_delete=models.CASCADE, related_name='grammar_answer')
     sentence = models.TextField(verbose_name=_('Sentence'))
     word = models.TextField(verbose_name=_('Word'))
