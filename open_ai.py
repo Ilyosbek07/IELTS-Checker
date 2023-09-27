@@ -68,54 +68,6 @@ class OpenAiChat:
             response["choices"][0]["message"]["content"].strip()
         )
 
-    def get_statistics(self, topic, text, letter_type):
-        overall_feedback = f"""
-            Identify the Requested Resired Statistics IELTS Letter General Training Writing Task 1.
-            There are:
-            Total paragraphs: number of letter paragraphs.
-            Total words: letter words total number.
-            Average Sentence: Average sentence length (avg number of words).
-            Total Sentences: letter sentences total number.
-            Cohesion: Determine whether the letter number of the connecting devices used is used to help achieve a high score for compatibility and coherence.
-            Sentence Variety: Help you find the level of different sentence types, which is one of the most important requirements for getting a high score in writing.
-            Spelling Mistakes:Return the level of spelling and typos and errors.
-            Word Repetition: the examiner is looking for memorised language, phrases and clichés. Memorised language is easy to identify, so use your own words and avoid overused phrases.Count repited words
-
-            Returning format example, return item as a json object:
-
-            {{
-                "total_paragraphs" : "number",
-                "total_words" : "number",
-                "average_sentence" : "number",
-                "total_sentence" : "number",
-                "cohesion" : "degree",
-                "sentence_variety" : "degree",
-                "spelling_mistakes" : "number",
-                "word_repetition" : "number",
-            }}
-
-            Topic: {topic}
-
-            Essay:
-            {text}
-
-            JSON:
-            """
-
-        messages = [
-            {"role": "system", "content": f"{self.system_role}"},
-            {"role": "user", "content": f"{overall_feedback}"},
-        ]
-        response = openai.ChatCompletion.create(
-            model=self.model,
-            messages=messages,
-            max_tokens=self.max_tokens,
-            temperature=self.temperature,
-        )
-        self.letter_statistic = json.loads(
-            response["choices"][0]["message"]["content"].strip()
-        )
-        print(self.letter_statistic)
 
     def get_letter_report(self, topic, text, letter_type):
         overall_feedback = f"""
