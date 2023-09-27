@@ -2,6 +2,8 @@ from django.db import models
 from apps.common.models import BaseModel
 from django.utils.translation import gettext as _
 
+from apps.user.models import User
+
 CHOICES = (
     ("low", _("Low")),
     ("Not Enough", _("Not Enough")),
@@ -10,6 +12,11 @@ CHOICES = (
 
 
 class BaseEssay(BaseModel):
+    # user = models.ForeignKey(
+    #     User,
+    #     related_name='user_essay',
+    #     on_delete=models.CASCADE
+    # )
     topic = models.TextField(_("Topic"), null=True, blank=True)
     text = models.TextField(_("Text"), null=True, blank=True)
     total_paragraph = models.IntegerField(verbose_name=_("Total Paragraphs"), null=True, blank=True)
@@ -116,7 +123,7 @@ class Recommend(BaseModel):
 
 
 class Highlight(BaseModel):
-    content = models.ForeignKey("essay.Content", on_delete=models.CASCADE, verbose_name=_("Content"))
+    content = models.ForeignKey(Content, on_delete=models.CASCADE, verbose_name=_("Content"))
     sentence = models.TextField(verbose_name=_("Sentence"))
     word = models.CharField(max_length=128, verbose_name=_("Word"))
     recommend = models.ManyToManyField("essay.Recommend", blank=True, verbose_name=_("Recommend"))

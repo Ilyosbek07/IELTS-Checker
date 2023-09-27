@@ -36,3 +36,36 @@ class HighlightSerializer(serializers.ModelSerializer):
             'word',
             'recommend',
         )
+
+
+class EssayStatisticsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Essay
+        fields = (
+            'html',
+            'text',
+            'total_paragraph',
+            'total_words',
+            'average_sentence',
+            'total_sentence',
+            'cohesion',
+            'sentence_variety',
+            'spelling_mistakes',
+            'word_repetition',
+        )
+class LetterStatisticsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Letter
+        fields = (
+            'html',
+            'text',
+            'type',
+            'total_paragraph',
+            'total_words',
+            'average_sentence',
+            'total_sentence',
+            'cohesion',
+            'sentence_variety',
+            'spelling_mistakes',
+            'word_repetition',
+        )
