@@ -1,7 +1,4 @@
 import json
-import openai
-
-import json
 
 import openai
 
