@@ -31,10 +31,7 @@ class SubScription(BaseModel):
     plan = models.CharField(_('Plan'), choices=PlanChoice.choices, max_length=125)
     coins = models.PositiveIntegerField(_('Coins'), default=3)
     price = models.PositiveIntegerField(_('Price'))
-    extra_info = models.ManyToManyField(
-        ExtraInfo,
-        related_name=_('Extra Info')
-    )
+    extra_info = models.ManyToManyField(ExtraInfo, related_name='subcription')
 
     def __str__(self):
         return f'{self.user} - {self.plan}'
