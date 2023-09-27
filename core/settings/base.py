@@ -50,6 +50,8 @@ CUSTOM_APPS = [
     "apps.essay",
     "apps.user",
     "apps.subscription",
+    "apps.notification",
+
 ]
 
 THIRD_PARTY_APPS = [
@@ -163,7 +165,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = "user.User"
 
 # CACHES
 CACHES = {
@@ -182,3 +183,4 @@ CELERY_TIMEZONE = "Asia/Tashkent"
 
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+AUTH_USER_MODEL = "user.User"
