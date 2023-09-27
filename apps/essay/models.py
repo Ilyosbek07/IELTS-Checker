@@ -26,11 +26,6 @@ class BaseEssay(BaseModel):
         abstract = True
 
 
-class MainFeedbackChoices(models.TextChoices):
-    lexical_resource = "Lexical Resource", _("Lexical Resource")
-    grammatical_range = "Grammatical Range", _("Feedback")
-
-
 class FeedbackChoices(models.TextChoices):
     feedback = "Feedback", _("Feedback")
     task_response = "Task Response", _("Task Response")
@@ -72,6 +67,11 @@ class Letter(BaseEssay):
 
     def __str__(self):
         return self.topic  # You can choose a more suitable field to represent the object
+
+
+class MainFeedbackChoices(models.TextChoices):
+    lexical_resource = "Lexical Resource", _("Lexical Resource")
+    grammatical_range = "Grammatical Range", _("Feedback")
 
 
 class Content(BaseModel):

@@ -2,6 +2,14 @@ from rest_framework import serializers
 from apps.essay.models import Essay, Letter, Content, Recommend, Highlight, BaseEssay
 
 
+class CheckSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    html = serializers.CharField(max_length=255)
+    topic = serializers.CharField(max_length=255)
+    essay_type = serializers.CharField(max_length=55)
+    letter_type = serializers.CharField(max_length=55, allow_null=True, allow_blank=True)
+
+
 class BaseEssaySerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseEssay
@@ -16,43 +24,6 @@ class BaseEssaySerializer(serializers.ModelSerializer):
             'sentence_variety',
             'spelling_mistakes',
             'word_repetition',
-        )
-
-
-class EssaySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Essay
-        fields = (
-            'html',
-        )
-
-
-class LetterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Letter
-        fields = (
-            'html',
-        )
-
-
-class ContentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Content
-        fields = (
-            'essay',
-            'letter',
-            'main_type',
-            'type',
-            'note',
-            'text',
-        )
-
-
-class RecommendSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Recommend
-        fields = (
-            'name',
         )
 
 
