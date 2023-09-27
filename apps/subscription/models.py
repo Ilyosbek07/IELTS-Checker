@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.common.models import BaseModel
+from apps.subscription.choices import PlanChoice
 from apps.user.models import User
 
 
@@ -16,26 +17,37 @@ class ExtraInfo(BaseModel):
         verbose_name_plural = 'Extra Infos'
 
 
-class SubScription(BaseModel):
-    class PlanChoice(models.TextChoices):
-        free = 'FREE', _('FREE')
-        premium_15 = 'PREMIUM 15', _('PREMIUM 15')
-        premium_25 = 'PREMIUM 25', _('PREMIUM 25')
-
-    user = models.ForeignKey(
-        User,
-        related_name='user_subscription',
-        on_delete=models.CASCADE,
-        verbose_name=_('User')
-    )
+class Subscription(BaseModel):
     plan = models.CharField(_('Plan'), choices=PlanChoice.choices, max_length=125)
     coins = models.PositiveIntegerField(_('Coins'), default=3)
     price = models.PositiveIntegerField(_('Price'))
-    extra_info = models.ManyToManyField(ExtraInfo, related_name='subcription')
+    extra_info = models.ManyToManyField(ExtraInfo, related_name='extra_info', verbose_name=_('Extra info'))
 
     def __str__(self):
-        return f'{self.user} - {self.plan}'
+        return f'Subscription - {self.plan}'
 
     class Meta:
         verbose_name = 'Subscription'
         verbose_name_plural = 'Subscriptions'
+
+
+class Order(BaseModel):
+    user = models.ForeignKey(
+        User,
+        related_name='user_order',
+        on_delete=models.CASCADE,
+        verbose_name=_('User')
+    )
+    subscription = models.ForeignKey(
+        Subscription,
+        related_name='subscription_order',
+        on_delete=models.CASCADE,
+        verbose_name=_('Subscription')
+    )
+
+    class Meta:
+        verbose_name = _('Order')
+        verbose_name_plural = _('Orders')
+
+    def __str__(self):
+        return f'{self.user} - {self.subscription.plan} order'

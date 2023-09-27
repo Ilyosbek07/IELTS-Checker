@@ -17,7 +17,8 @@ class BaseEssay(BaseModel):
     average_sentence = models.IntegerField(verbose_name=_("Average Sentence"), null=True, blank=True)
     total_sentence = models.IntegerField(verbose_name=_("Total Sentences"), null=True, blank=True)
     cohesion = models.CharField(max_length=55, choices=CHOICES, verbose_name=_("Cohesion"), null=True, blank=True)
-    sentence_variety = models.CharField(max_length=55, choices=CHOICES, verbose_name=_("Sentence Variety"), null=True, blank=True)
+    sentence_variety = models.CharField(max_length=55, choices=CHOICES, verbose_name=_("Sentence Variety"), null=True,
+                                        blank=True)
     spelling_mistakes = models.IntegerField(verbose_name=_("Spelling Mistakes"), null=True, blank=True)
     word_repetition = models.IntegerField(verbose_name=_("Word Repetition"), null=True, blank=True)
 
@@ -63,7 +64,7 @@ class Letter(BaseEssay):
         formal = "Formal", _("Formal")
         informal = "InFormal", _("InFormal")
 
-    type = models.CharField(_("Type"), max_length=125)
+    type = models.CharField(_("Type"), choices=Type.choices, max_length=125)
 
     class Meta:
         verbose_name = "Letter"
