@@ -9,7 +9,7 @@ class OpenAiChat:
         You know everything about scoring IELTS essays. You assess the given essay of the given question and provide
         feedback to help the writer to improve in the future, and specify mistakes and suggest corrections.
         """
-        self.api_key = "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"
+        self.api_key = "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"
         self.max_tokens = max_tokens
         self.temperature = 0
         self.model = "gpt-3.5-turbo-0613"
@@ -68,7 +68,6 @@ class OpenAiChat:
             response["choices"][0]["message"]["content"].strip()
         )
 
-
     def get_letter_report(self, topic, text, letter_type):
         overall_feedback = f"""
             Identify Report IELTS Letter General Training Writing Task 1.
@@ -83,25 +82,19 @@ class OpenAiChat:
                 "cohesion": [
                       {{
                           "feedback" : "text"  
-                      }},
-                      {{
-                          "word": 'word_1',
-                          "sentence": 'sentence_1'
+                          "word": 'words',
+                          "sentence": 'sentences'
                       }},
                 ],    
                 "sentence_variety" : [
                       {{
                           "feedback" : "text"  
-                      }},
-                      {{
                           "word": 'word_1',
                           "sentence": 'sentence_1'
                       }},
                 "subordinate_clauses" : [
                       {{
                           "feedback" : "text"  
-                      }}, 
-                      {{
                           "word": 'word_1',
                           "sentence": 'sentence_1'
                       }},
@@ -131,29 +124,65 @@ class OpenAiChat:
         )
         print(self.letter_report)
 
+    def generate_cohesion_coherence(self, topic, text):
+        # AI
+        cohesion_coherence = f"""
+        Retrieve sentences containing strong cohesive devices from the essay. Cohesive devices encompass words or phrases that signal connections between paragraphs or sections within a text or speech. These devices include References, Conjunctions, Linking Words and Phrases, Ellipsis, Substitution, and Parallelism. Please exclude any sentences lacking cohesive devices and refrain from returning the entire essay or any descriptive content.
+        If the essay do not have any cohesive devices like however, therefore, etc. then return the empty list. You don't need to find the cohesive devices from every essay
+
+        Returning format example, return as a json object:
+        {{
+                "note": 'cohesion_coherence_note' (Generate concise notes on cohesion and coherence based on the provided essay. Cohesion pertains to the grammatical and lexical elements that connect sentences and paragraphs, ensuring a smooth flow of ideas. Coherence, on the other hand, relates to the logical arrangement and clarity of these ideas. Please provide a summary of these concepts without including the entire essay.),
+                "list": [
+                    {{
+                        "cohesive_device": 'cohesive_device_1',
+                        "sentence": 'sentence_1'
+                    }},
+
+                    {{
+                        "cohesive_device": 'cohesive_device_2',
+                        "sentence": 'sentence_2'
+                    }},
+                ]
+        }}
+
+        Topic: {topic}
+
+        Essay:
+        {text}
+        """
+
+        messages = [
+            {"role": "system", "content": f"{self.system_role}"},
+            {"role": "user", "content": f"{cohesion_coherence}"},
+        ]
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=messages,
+            max_tokens=self.max_tokens,
+            temperature=self.temperature,
+        )
+
+        self.cohesion_coherence = json.loads(response["choices"][0]["message"]["content"].strip())
+        print(self.cohesion_coherence)
 # text = "Dear Sir / Madam,\n\nI am writing to you as I recently received a letter from you informing me that the insurance premium for my car is going to increase from next month.\n\nAs you will be aware if you check my records, I have held my insurance with your company for nearly seven years now. During this time, I have never had an accident and never had any reason to make a claim on my insurance.\n\nI understand that at times prices need to be increased. However, this increase you are suggesting will result in a 20% increase in the amount I pay each month, a rate I feel is too much.\n\nI would therefore like you to write back to me and explain why such an increase has been proposed. If you are unable to justify it to my satisfaction, then I am afraid that I will have no other option but to move my insurance to another company.\n\nI look forward to hearing from you,Yours faithfully,\n\nJay"
-text = """
-Dear Sir/Madam,
+text = """Dear Sir / Madam,
 
-I am writing to express my concern regarding the recent notification I received from your company regarding an impending increase in the insurance premium for my car, set to take effect next month.
+I am writing to you as I recently received a letter from you informing me that the insurance premium for my car is going to increase from next month.
 
-As you may have noticed in your records, I have been a loyal customer of your company for nearly seven years. Throughout this period, I have maintained an impeccable driving record, never having been involved in any accidents or needing to file a claim.
+As you will be aware if you check my records, I have held my insurance with your company for nearly seven years now. During this time, I have never had an accident and never had any reason to make a claim on my insurance.
 
-While I understand that periodic adjustments to pricing may be necessary, I was surprised to learn that the proposed increase would result in a substantial 20% rise in my monthly premium. This significant increase has prompted me to seek clarification regarding the rationale behind this decision.
+I understand that at times prices need to be increased. However, this increase you are suggesting will result in a 20% increase in the amount I pay each month, a rate I feel is too much.
 
-I kindly request that you provide a detailed explanation for the substantial premium hike. Understanding the factors contributing to this increase will help me make an informed decision about whether to continue my insurance coverage with your company. 
+I would therefore like you to write back to me and explain why such an increase has been proposed. If you are unable to justify it to my satisfaction, then I am afraid that I will have no other option but to move my insurance to another company.
 
-Should you be unable to provide a satisfactory justification for the proposed rate hike, I may regrettably have no choice but to explore alternative insurance options with other providers.
-
-I eagerly anticipate your response and hope that you can shed light on the reasons for this substantial premium increase. 
+I look forward to hearing from you,
 
 Yours faithfully,
 
-Jay
-"""
+Jay"""
 # text = "Dear Sir / Madam, I am writing to you as I recently received a letter from you informing me that the insurance premium for my car is going to increase from next month. As you will be aware if you check my records, I have held my insurance with your company for nearly seven years now. During this time, I have never had an accident and never had any reason to make a claim on my insurance. I understand that at times prices need to be increased. However, this increase you are suggesting will result in a 20% increase in the amount I pay each month, a rate I feel is too much. I would therefore like you to write back to me and explain why such an increase has been proposed. If you are unable to justify it to my satisfaction, then I am afraid that I will have no other option but to move my insurance to another company. I look forward to hearing from you,Yours faithfully, Jay"
-topic = 'Letter for informing that the insurance premium for the car is going to increase from next month.'
+topic = 'Currently there is a trend towards the use of alternative forms of medicine. However, at best these methods are ineffective, and at worst they may be dangerous.To what extent do you agree with this statement?'
 cv = OpenAiChat()
-cv.get_statistics(topic=topic,
-                     text=text,
-                     letter_type='formal')
+cv.generate_cohesion_coherence(topic=topic,
+                  text=text)

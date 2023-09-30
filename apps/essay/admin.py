@@ -14,7 +14,7 @@ class LetterAdmin(admin.ModelAdmin):
 
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'essay', 'letter', 'main_type', 'type')
+    list_display = ('id', 'essay', 'letter', 'main_type')
 
 
 @admin.register(Recommend)

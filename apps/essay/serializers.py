@@ -4,10 +4,10 @@ from apps.essay.models import Essay, Letter, Content, Recommend, Highlight, Base
 
 class CheckSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    html = serializers.CharField(max_length=255)
-    topic = serializers.CharField(max_length=255)
-    essay_type = serializers.CharField(max_length=55)
-    letter_type = serializers.CharField(max_length=55, allow_null=True, allow_blank=True)
+    html = serializers.CharField()
+    topic = serializers.CharField()
+    essay_type = serializers.CharField()
+    letter_type = serializers.CharField()
 
 
 class BaseEssaySerializer(serializers.ModelSerializer):
@@ -53,6 +53,8 @@ class EssayStatisticsSerializer(serializers.ModelSerializer):
             'spelling_mistakes',
             'word_repetition',
         )
+
+
 class LetterStatisticsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Letter
@@ -68,4 +70,28 @@ class LetterStatisticsSerializer(serializers.ModelSerializer):
             'sentence_variety',
             'spelling_mistakes',
             'word_repetition',
+        )
+
+
+class LetterContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Content
+        fields = (
+            'letter',
+            'main_type',
+            'note',
+            'text',
+            'json',
+        )
+
+
+class EssayContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Content
+        fields = (
+            'essay',
+            'main_type',
+            'note',
+            'text',
+            'json',
         )

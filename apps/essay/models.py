@@ -5,9 +5,9 @@ from django.utils.translation import gettext as _
 from apps.user.models import User
 
 CHOICES = (
-    ("low", _("Low")),
+    ("Low", _("Low")),
     ("Not Enough", _("Not Enough")),
-    ("good", _("Good")),
+    ("Good", _("Good")),
 )
 
 
@@ -33,6 +33,42 @@ class BaseEssay(BaseModel):
         abstract = True
 
 
+class Essay(BaseEssay):
+    html = models.CharField(_("html"), max_length=255)
+
+    class Meta:
+        verbose_name = "Essay"
+        verbose_name_plural = "Essays"
+
+    def __str__(self):
+        return self.topic  # You can choose a more suitable field to represent the object
+
+
+class Letter(BaseEssay):
+    html = models.TextField()
+
+    class Type(models.TextChoices):
+        formal = "formal", _("Formal")
+        informal = "informal", _("InFormal")
+
+    type = models.CharField(_("Type"), choices=Type.choices, max_length=125)
+
+    class Meta:
+        verbose_name = "Letter"
+        verbose_name_plural = "Letters"
+
+    def __str__(self):
+        return self.topic  # You can choose a more suitable field to represent the object
+
+
+class MainFeedbackChoices(models.TextChoices):
+    feedback = "Feedback", _("Feedback")
+    grammar = "Grammar", _("Grammar")
+    tone_feedback = "Tone Feedback", _("Tone Feedback")
+    lexical_resource = "Lexical Resource", _("Lexical Resource")
+    report = "Report", _("Report")
+
+
 class FeedbackChoices(models.TextChoices):
     feedback = "Feedback", _("Feedback")
     task_response = "Task Response", _("Task Response")
@@ -48,47 +84,14 @@ class FeedbackChoices(models.TextChoices):
     grammatical_check = "Grammatical Check", _("Grammatical Check")
 
 
-class Essay(BaseEssay):
-    html = models.CharField(_("html"), max_length=255)
-
-    class Meta:
-        verbose_name = "Essay"
-        verbose_name_plural = "Essays"
-
-    def __str__(self):
-        return self.topic  # You can choose a more suitable field to represent the object
-
-
-class Letter(BaseEssay):
-    html = models.CharField(_("html"), max_length=255)
-
-    class Type(models.TextChoices):
-        formal = "Formal", _("Formal")
-        informal = "InFormal", _("InFormal")
-
-    type = models.CharField(_("Type"), choices=Type.choices, max_length=125)
-
-    class Meta:
-        verbose_name = "Letter"
-        verbose_name_plural = "Letters"
-
-    def __str__(self):
-        return self.topic  # You can choose a more suitable field to represent the object
-
-
-class MainFeedbackChoices(models.TextChoices):
-    lexical_resource = "Lexical Resource", _("Lexical Resource")
-    grammatical_range = "Grammatical Range", _("Feedback")
-
-
 class Content(BaseModel):
-    essay = models.ForeignKey("essay.Essay",
+    essay = models.ForeignKey(Essay,
                               on_delete=models.CASCADE,
                               null=True,
                               blank=True,
                               verbose_name=_("Essay")
                               )
-    letter = models.ForeignKey("essay.Letter",
+    letter = models.ForeignKey(Letter,
                                on_delete=models.CASCADE,
                                null=True,
                                blank=True,
@@ -99,9 +102,14 @@ class Content(BaseModel):
                                  null=True,
                                  blank=True,
                                  verbose_name=_("Main Type"))
-    type = models.CharField(max_length=32, choices=FeedbackChoices.choices, verbose_name=_("Type"))
+    type = models.CharField(max_length=32,
+                            choices=FeedbackChoices.choices,
+                            null=True,
+                            blank=True,
+                            verbose_name=_("Type"))
     note = models.CharField(max_length=512, null=True, blank=True, verbose_name=_("Note"))
     text = models.TextField(verbose_name=_("Text"), null=True, blank=True)
+    json = models.JSONField(verbose_name=_("Json"), null=True, blank=True)
 
     class Meta:
         verbose_name = "Content"
@@ -126,7 +134,7 @@ class Highlight(BaseModel):
     content = models.ForeignKey(Content, on_delete=models.CASCADE, verbose_name=_("Content"))
     sentence = models.TextField(verbose_name=_("Sentence"))
     word = models.CharField(max_length=128, verbose_name=_("Word"))
-    recommend = models.ManyToManyField("essay.Recommend", blank=True, verbose_name=_("Recommend"))
+    recommend = models.ManyToManyField(Recommend, blank=True, verbose_name=_("Recommend"))
 
     class Meta:
         verbose_name = "Highlight"
